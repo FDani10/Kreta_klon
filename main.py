@@ -2,10 +2,17 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import mysql.connector
 import ctypes
+import math
+
+diakID = ""
+lines = []
+numbers = []
 
 con = mysql.connector.connect( host="localhost", user="root", password="", database="kreta_klon")
 cursor = con.cursor()
+
 def DiakBej():
+    global diakID
     ud = username_d.get()
     pd = password_d.get()
     if(ud == "" or pd == ""):
@@ -15,6 +22,8 @@ def DiakBej():
         cursor.execute(diakInTable)
         table = cursor.fetchall()
         if(len(table) == 1):
+            diakID = ud
+
             #Legutolsó 3 jegy
             utolso3jegy = "SELECT tantargy.tantargy_nev,beirt_jegy FROM `jegy` INNER JOIN tanora on tanora.tanora_id = jegy.tanora_id inner JOIN tantargy on tantargy.tantargy_id = tanora.tantargy_id where jegy.diak_id = "+ud+" ORDER BY jegy_id DESC limit 3;"
             cursor.execute(utolso3jegy)
@@ -41,20 +50,186 @@ def DiakBej():
             match atlag:
                 case atlag if 2 > atlag:
                     atlagNagy.config(foreground="darkred")
-                case atlag if 2<atlag<3:
+                case atlag if 2<=atlag<3:
                     atlagNagy.config(foreground="red")
-                case atlag if 3<atlag<4:
+                case atlag if 3<=atlag<4:
                     atlagNagy.config(foreground="lightgreen")
-                case atlag if 4<atlag<4.5:
+                case atlag if 4<=atlag<4.5:
                     atlagNagy.config(foreground="green")
                 case atlag if 4.4 < atlag:
                     atlagNagy.config(foreground="darkgreen")
 
+
+            #Jegyek oldal megcsinálása
+            tanuloTantargyak = f"SELECT tantargy.tantargy_id, tantargy.tantargy_nev FROM `diak` inner join osztaly on osztaly.osztaly_id = diak.diak_osztaly INNER JOIN tanora on tanora.osztaly_id = osztaly.osztaly_id inner join tantargy on tantargy.tantargy_id = tanora.tantargy_id where diak.diak_id = {diakID};"
+            cursor.execute(tanuloTantargyak)
+            Tantargyak = cursor.fetchall()
+            for i in range(0,len(Tantargyak)):
+                tanId = str(Tantargyak[i][0])
+                if i%2 == 0:
+                    tantargyGomb = tk.Button(canvas_jegyDiak,image=tantargyKocka,command= lambda e = tanId:jegyreKattint(e))
+                    tantargyGomb["bg"] = "#ACC8FF"
+                    tantargyGomb["activebackground"] = "#ACC8FF"
+                    tantargyGomb["border"] = "0"
+                    tantargyGomb.place(x=70,y=100+math.floor(i/2)*130)
+                    tantargyNev = tk.Label(canvas_jegyDiak,bg="#DBE8FF",foreground="black",text=Tantargyak[i][1],font=('Inter',20,'bold'))
+                    tantargyNev.place(x=84,y=120+math.floor(i/2)*130,width=208,height=28)
+                    tantargyNev.bind("<Button-1>", lambda e,id = tanId : jegyreKattint(id))
+                    atlagKep = tk.Label(canvas_jegyDiak,bg="#DBE8FF")
+                    atlagKep.place(x=300,y=107+math.floor(i/2)*130)
+                    atlagKep.bind("<Button-1>", lambda e,id = tanId : jegyreKattint(id))
+
+                    tanuloTanAtlag = f"SELECT ROUND(AVG(beirt_jegy),1) FROM `jegy` inner join tanora on tanora.tanora_id = jegy.tanora_id where jegy.diak_id = {diakID} and tanora.tantargy_id = {tanId};"
+                    cursor.execute(tanuloTanAtlag)
+                    TanAtlag = cursor.fetchall()
+                    atlag = TanAtlag[0][0]
+                    atlagText = tk.Label(canvas_jegyDiak,text=atlag,font=('Inter',18,'bold'))
+                    atlagText.place(x=309,y=119+math.floor(i/2)*130)
+                    atlagText.bind("<Button-1>", lambda e,id = tanId : jegyreKattint(id))
+                    match atlag:
+                            case atlag if 2 > atlag:
+                                atlagKep["image"] = jegyElegtelen
+                                atlagText["bg"] = "#ab1400"
+                            case atlag if 2<=atlag<3:
+                                atlagKep["image"] = jegyElegseges
+                                atlagText["bg"] = "#fd1e00"
+                            case atlag if 3<=atlag<4:
+                                atlagKep["image"] = jegyKozepes
+                                atlagText["bg"] = "#00ef18"
+                            case atlag if 4<=atlag<4.5:
+                                atlagKep["image"] = jegyJo
+                                atlagText["bg"] = "#00ac11"
+                            case atlag if 4.4 < atlag:
+                                atlagKep["image"] = jegyKivalo
+                                atlagText["bg"] = "#005e09"
+
+                else:
+                    tantargyGomb = tk.Button(canvas_jegyDiak,image=tantargyKocka,command=lambda e = tanId:jegyreKattint(e))
+                    tantargyGomb["bg"] = "#ACC8FF"
+                    tantargyGomb["activebackground"] = "#ACC8FF"
+                    tantargyGomb["border"] = "0"
+                    tantargyGomb.place(x=418,y=100+math.floor(i/2)*130)
+                    tantargyNev = tk.Label(canvas_jegyDiak,bg="#DBE8FF",foreground="black",text=Tantargyak[i][1],font=('Inter',20,'bold'))
+                    tantargyNev.place(x=432,y=120+math.floor(i/2)*130,width=208,height=28)
+                    tantargyNev.bind("<Button-1>", lambda e,id = tanId : jegyreKattint(id))
+                    atlagKep = tk.Label(canvas_jegyDiak,bg="#DBE8FF")
+                    atlagKep.place(x=648,y=107+math.floor(i/2)*130)
+                    atlagKep.bind("<Button-1>", lambda e,id = tanId : jegyreKattint(id))
+
+                    tanuloTanAtlag = f"SELECT ROUND(AVG(beirt_jegy),1) FROM `jegy` inner join tanora on tanora.tanora_id = jegy.tanora_id where jegy.diak_id = {diakID} and tanora.tantargy_id = {tanId};"
+                    cursor.execute(tanuloTanAtlag)
+                    TanAtlag = cursor.fetchall()
+                    atlag = TanAtlag[0][0]
+                    atlagText = tk.Label(canvas_jegyDiak,text=atlag,font=('Inter',18,'bold'))
+                    atlagText.place(x=657,y=119+math.floor(i/2)*130)
+                    atlagText.bind("<Button-1>", lambda e,id = tanId : jegyreKattint(id))
+                    match atlag:
+                            case atlag if 2 > atlag:
+                                atlagKep["image"] = jegyElegtelen
+                                atlagText["bg"] = "#ab1400"
+                            case atlag if 2<=atlag<3:
+                                atlagKep["image"] = jegyElegseges
+                                atlagText["bg"] = "#fd1e00"
+                            case atlag if 3<=atlag<4:
+                                atlagKep["image"] = jegyKozepes
+                                atlagText["bg"] = "#00ef18"
+                            case atlag if 4<=atlag<4.5:
+                                atlagKep["image"] = jegyJo
+                                atlagText["bg"] = "#00ac11"
+                            case atlag if 4.4 < atlag:
+                                atlagKep["image"] = jegyKivalo
+                                atlagText["bg"] = "#005e09"
+
             canvas_bej.place(x=1000,y=0)
-            canvas_kezdDiak.place(x=0,y=0)
+            canvas_kezdDiak.place(x=200,y=0)
+            canvas_oldalMenu.place(x=0,y=0)
         else:
             print("Rossz név vagy jelszó!")
     
+def jegyreKattint(tanId):
+    global diakID
+    tanuloTanJegyek = f"SELECT beirt_jegy,jegy_ido FROM `jegy` inner join tanora on tanora.tanora_id = jegy.tanora_id where diak_id = {diakID} and tanora.tantargy_id = {tanId} ORDER BY jegy_ido DESC;"
+    cursor.execute(tanuloTanJegyek)
+    TanJegyek = cursor.fetchall()
+    nums = []
+    for i in range(0,len(TanJegyek)): 
+        nums.append(TanJegyek[i][0])
+        label1 = tk.Label(canvasScrollable,image=jegyekBeirva,bg="#ACC8FF")
+        canvasScrollable.create_window(300, 50+i*70, window=label1)
+
+        jegyLabel = tk.Label(canvasScrollable,font=('Inter',20,'bold'),text=TanJegyek[i][1],bg="#D9D9D9")
+        canvasScrollable.create_window(150, 50+i*70, window=jegyLabel)
+
+        jegyElvImg = tk.Label(canvasScrollable, image=jegyElvalaszto,bg="#D9D9D9")
+        canvasScrollable.create_window(250, 50+i*70, window=jegyElvImg)
+
+        jegyElvImg2 = tk.Label(canvasScrollable, image=jegyElvalaszto,bg="#D9D9D9")
+        canvasScrollable.create_window(450, 50+i*70, window=jegyElvImg2)
+
+        jegyNum = tk.Label(canvasScrollable,font=('Inter',20,'bold'),text=TanJegyek[i][0],bg="#D9D9D9")
+        canvasScrollable.create_window(500, 50+i*70, window=jegyNum)
+
+    canvas_jegyek.create_image(74,15,anchor="nw",image=nagyKocka)
+
+    ugras = 500/len(nums)
+    l = nums[0]
+    for i in range(1,len(nums)+1):
+        ujl = round(sum(nums[:i])/len(nums[:i]),2)
+        line = canvas_jegyek.create_line(ugras*i+100,320-l*50,ugras*(i+1)+100,320-ujl*50,fill="red")
+        lines.append(line)
+        avgNum = tk.Label(canvas_jegyek,bg="#DBE8FF",foreground="black",text=str(ujl),font=('Inter',10))
+        avgNum.place(x=ugras*(i+1)+80,y=290-ujl*50)
+        numbers.append(avgNum)
+        l=sum(nums[:i])/len(nums[:i])
+
+    canvasScrollable["scrollregion"]=(0,0,500,40+len(TanJegyek)*70)
+    canvasScrollable.pack(side="left",expand=True,fill="both")
+
+    visszaBtn = tk.Button(canvas_jegyek,text="Vissza",command=backToJegyek)
+    visszaBtn.place(x=350,y=620,width=100,height=50)
+
+    canvas_jegyDiak.place(x=1000,y=0)
+    canvas_jegyek.place(x=200,y=0)
+
+def backToJegyek():
+    global canvas_jegyek
+    global lines
+    global canvasScrollable
+
+    canvas_jegyek.delete("all")
+    canvasScrollable.delete("all")
+    
+    for i in range(0,len(lines)):
+        canvas_jegyek.delete(lines[i])
+
+    for i in range(0,len(numbers)):
+        numbers[i].destroy()
+
+    canvas_jegyDiak.place(x=200,y=0)
+    canvas_jegyek.place(x=1000,y=0)
+
+def DiakKezd():
+    canvas_jegyDiak.place(x=1000,y=0)
+    canvas_kezdDiak.place(x=200,y=0)
+
+    fooldal_btn["image"] = fooldal_selected
+    orak_btn["image"] = orakBtn
+    jegyek_btn["image"] = jegyekBtn
+    infok_btn["image"] = infokBtn
+    profil_btn["image"] = profilBtn
+
+def DiakJegy():
+    canvas_kezdDiak.place(x=1000,y=0)
+    canvas_jegyDiak.place(x=200,y=0)
+
+    fooldal_btn["image"] = fooldalBtn
+    orak_btn["image"] = orakBtn
+    jegyek_btn["image"] = jegyek_selected
+    infok_btn["image"] = infokBtn
+    profil_btn["image"] = profilBtn
+
+
+
 
 main = tk.Tk()
 ctypes.windll.shcore.SetProcessDpiAwareness(1)
@@ -66,24 +241,36 @@ main.title("Kréta")
 image_btn=Image.open(f'./pics/kretalogo.png')
 img_btn=image_btn.resize((41, 39))
 kretaLogo=ImageTk.PhotoImage(img_btn)
+
+image_btn=Image.open(f'./pics/fooldalBtn.png')
+img_btn=image_btn.resize((108, 25))
+fooldalBtn=ImageTk.PhotoImage(img_btn)
 image_btn=Image.open(f'./pics/fooldal_selected.png')
 img_btn=image_btn.resize((155, 45))
 fooldal_selected=ImageTk.PhotoImage(img_btn)
+
 image_btn=Image.open(f'./pics/infokBtn.png')
 img_btn=image_btn.resize((82, 25))
 infokBtn=ImageTk.PhotoImage(img_btn)
+
 image_btn=Image.open(f'./pics/jegyekBtn.png')
 img_btn=image_btn.resize((102, 25))
 jegyekBtn=ImageTk.PhotoImage(img_btn)
-image_btn=Image.open(f'./pics/kijelentBtn.png')
-img_btn=image_btn.resize((158, 25))
-kijelentBtn=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyek_selected.png')
+img_btn=image_btn.resize((155, 45))
+jegyek_selected=ImageTk.PhotoImage(img_btn)
+
 image_btn=Image.open(f'./pics/orakBtn.png')
 img_btn=image_btn.resize((82, 25))
 orakBtn=ImageTk.PhotoImage(img_btn)
+
 image_btn=Image.open(f'./pics/profilBtn.png')
 img_btn=image_btn.resize((137, 25))
 profilBtn=ImageTk.PhotoImage(img_btn)
+
+image_btn=Image.open(f'./pics/kijelentBtn.png')
+img_btn=image_btn.resize((158, 25))
+kijelentBtn=ImageTk.PhotoImage(img_btn)
 image_btn=Image.open(f'./pics/kicsiKocka.png')
 img_btn=image_btn.resize((300, 275))
 kicsiKocka=ImageTk.PhotoImage(img_btn)
@@ -102,6 +289,34 @@ nkKisvonal=ImageTk.PhotoImage(img_btn)
 image_btn=Image.open(f'./pics/nkNagyvonal.png')
 img_btn=image_btn.resize((580, 3))
 nkNagyvonal=ImageTk.PhotoImage(img_btn)
+
+image_btn=Image.open(f'./pics/tantargyKocka.png')
+img_btn=image_btn.resize((312, 67))
+tantargyKocka=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyKivalo.png')
+img_btn=image_btn.resize((53, 53))
+jegyKivalo=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyJo.png')
+img_btn=image_btn.resize((53, 53))
+jegyJo=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyKozepes.png')
+img_btn=image_btn.resize((53, 53))
+jegyKozepes=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyElegseges.png')
+img_btn=image_btn.resize((53, 53))
+jegyElegseges=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyElegtelen.png')
+img_btn=image_btn.resize((53, 53))
+jegyElegtelen=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyekBeirva.png')
+img_btn=image_btn.resize((503, 59))
+jegyekBeirva=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/nagyKocka.png')
+img_btn=image_btn.resize((672, 265))
+nagyKocka=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyElvalaszto.png')
+img_btn=image_btn.resize((3, 26))
+jegyElvalaszto=ImageTk.PhotoImage(img_btn)
 #endregion
 
 #region Bejelentkezés ablak
@@ -172,117 +387,148 @@ reg_btn2["border"] = "0"
 reg_btn2.place(x=630,y=544)
 #endregion
 
-#region Kezdőlap diáknak
-canvas_kezdDiak = tk.Canvas(main,bg="#3479FF",width=1000,height=700)
-canvas_kezdDiak.place(x=1000,y=0)
+#region Oldalmenü
 
-valasztoFelulet = tk.Label(canvas_kezdDiak,bg="#3479FF")
+canvas_oldalMenu = tk.Canvas(main,bg="#3479FF",width=200,height=700)
+canvas_oldalMenu.place(x=1000,y=0)
+
+valasztoFelulet = tk.Label(canvas_oldalMenu,bg="#3479FF")
 valasztoFelulet.place(x=0,y=0,width=200,height=700)
 
-kretaLogoLabel = tk.Label(canvas_kezdDiak, image=kretaLogo,bg="#3479FF")
+kretaLogoLabel = tk.Label(canvas_oldalMenu, image=kretaLogo,bg="#3479FF")
 kretaLogoLabel.place(x=13,y=18)
 
-kretaLogoText = tk.Label(canvas_kezdDiak,bg="#3479FF",foreground="white",text="KRÉTA",font=('Inter',26,'bold'))
+kretaLogoText = tk.Label(canvas_oldalMenu,bg="#3479FF",foreground="white",text="KRÉTA",font=('Inter',26,'bold'))
 kretaLogoText.place(x=54,y=18,width=121,height=39)
 
-fooldal_btn = tk.Button(canvas_kezdDiak,image=fooldal_selected)
+fooldal_btn = tk.Button(canvas_oldalMenu,image=fooldal_selected,command=DiakKezd)
 fooldal_btn["bg"] = "#3479FF"
 fooldal_btn["activebackground"] = "#3479FF"
 fooldal_btn["border"] = "0"
-fooldal_btn.place(x=20,y=122)
-orak_btn = tk.Button(canvas_kezdDiak,image=orakBtn)
+fooldal_btn.place(x=29,y=122)
+orak_btn = tk.Button(canvas_oldalMenu,image=orakBtn)
 orak_btn["bg"] = "#3479FF"
 orak_btn["activebackground"] = "#3479FF"
 orak_btn["border"] = "0"
 orak_btn.place(x=29,y=187)
-jegyek_btn = tk.Button(canvas_kezdDiak,image=jegyekBtn)
+jegyek_btn = tk.Button(canvas_oldalMenu,image=jegyekBtn,command=DiakJegy)
 jegyek_btn["bg"] = "#3479FF"
 jegyek_btn["activebackground"] = "#3479FF"
 jegyek_btn["border"] = "0"
 jegyek_btn.place(x=29,y=242)
-infok_btn = tk.Button(canvas_kezdDiak,image=infokBtn)
+infok_btn = tk.Button(canvas_oldalMenu,image=infokBtn)
 infok_btn["bg"] = "#3479FF"
 infok_btn["activebackground"] = "#3479FF"
 infok_btn["border"] = "0"
 infok_btn.place(x=29,y=297)
-profil_btn = tk.Button(canvas_kezdDiak,image=profilBtn)
+profil_btn = tk.Button(canvas_oldalMenu,image=profilBtn)
 profil_btn["bg"] = "#3479FF"
 profil_btn["activebackground"] = "#3479FF"
 profil_btn["border"] = "0"
 profil_btn.place(x=29,y=351)
-kijelent_btn = tk.Button(canvas_kezdDiak,image=kijelentBtn)
+kijelent_btn = tk.Button(canvas_oldalMenu,image=kijelentBtn,command=main.destroy)
 kijelent_btn["bg"] = "#3479FF"
 kijelent_btn["activebackground"] = "#3479FF"
 kijelent_btn["border"] = "0"
 kijelent_btn.place(x=20,y=659)
 
+#endregion
+
+#region Kezdőlap diáknak
+
+canvas_kezdDiak = tk.Canvas(main,bg="#3479FF",width=800,height=700)
+canvas_kezdDiak.place(x=1000,y=0)
+
 masikOldal = tk.Label(canvas_kezdDiak,bg="#ACC8FF")
-masikOldal.place(x=200,y=0,width=800,height=700)
+masikOldal.place(x=000,y=0,width=800,height=700)
 
 #Első kicsi kocka
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=kicsiKocka,bg="#ACC8FF")
-kretaLogoLabel.place(x=252,y=62)
+kretaLogoLabel.place(x=52,y=62)
 
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=kkKisvonal,bg="#DBE8FF")
-kretaLogoLabel.place(x=268,y=111)
+kretaLogoLabel.place(x=68,y=111)
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=kkNagyvonal,bg="#DBE8FF")
-kretaLogoLabel.place(x=293,y=181)
+kretaLogoLabel.place(x=93,y=181)
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=kkNagyvonal,bg="#DBE8FF")
-kretaLogoLabel.place(x=293,y=244)
+kretaLogoLabel.place(x=93,y=244)
 
 szoveg1 = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="Új beírt jegyek:",font=('Inter',18,'bold'))
-szoveg1.place(x=269,y=76,width=179,height=29)
+szoveg1.place(x=69,y=76,width=179,height=29)
 jegy1Text = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="#1E1E1E",text="Matematika",font=('Inter',16,'bold'),anchor='w')
-jegy1Text.place(x=308,y=140,width=200,height=21)
+jegy1Text.place(x=108,y=140,width=200,height=21)
 jegy1Num = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="3",font=('Inter',16,'bold'))
-jegy1Num.place(x=479,y=140,width=14,height=21)
+jegy1Num.place(x=279,y=140,width=14,height=21)
 jegy2Text = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="#1E1E1E",text="Informatika",font=('Inter',16,'bold'),anchor='w')
-jegy2Text.place(x=308,y=202,width=200,height=21)
+jegy2Text.place(x=108,y=202,width=200,height=21)
 jegy2Num = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="5",font=('Inter',16,'bold'))
-jegy2Num.place(x=479,y=202,width=14,height=21)
+jegy2Num.place(x=279,y=202,width=14,height=21)
 jegy3Text = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="#1E1E1E",text="Kémia",font=('Inter',16,'bold'),anchor='w')
-jegy3Text.place(x=308,y=264,width=200,height=21)
+jegy3Text.place(x=108,y=264,width=200,height=21)
 jegy3Num = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="2",font=('Inter',16,'bold'))
-jegy3Num.place(x=479,y=264,width=14,height=21)
+jegy3Num.place(x=279,y=264,width=14,height=21)
 
 #Második kicsi kocka
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=kicsiKocka,bg="#ACC8FF")
-kretaLogoLabel.place(x=624,y=62)
+kretaLogoLabel.place(x=424,y=62)
 
 szoveg1 = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="Átlag:",font=('Inter',18,'bold'))
-szoveg1.place(x=738,y=76,width=72,height=29)
+szoveg1.place(x=538,y=76,width=72,height=29)
 
 atlagNagy = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="green",text="4,2",font=('Inter',80,'bold'),anchor="center")
-atlagNagy.place(x=693,y=144,width=163,height=118)
+atlagNagy.place(x=493,y=144,width=163,height=118)
 
 
 #Alsó nagy kocka
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=nagyKocka,bg="#ACC8FF")
-kretaLogoLabel.place(x=252,y=376)
+kretaLogoLabel.place(x=52,y=376)
 
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=nkKisvonal,bg="#DBE8FF")
-kretaLogoLabel.place(x=265,y=433)
+kretaLogoLabel.place(x=65,y=433)
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=nkNagyvonal,bg="#DBE8FF")
-kretaLogoLabel.place(x=297,y=496)
+kretaLogoLabel.place(x=97,y=496)
 kretaLogoLabel = tk.Label(canvas_kezdDiak, image=nkNagyvonal,bg="#DBE8FF")
-kretaLogoLabel.place(x=297,y=559)
+kretaLogoLabel.place(x=97,y=559)
 
 mess1 = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="Új információk:",font=('Inter',18,'bold'),anchor='w')
-mess1.place(x=269,y=393,width=179,height=29)
+mess1.place(x=69,y=393,width=179,height=29)
 
 mess1 = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="#1E1E1E",text="Juhász Magdolna",font=('Inter',16,'bold'),anchor='w')
-mess1.place(x=310,y=460,width=242,height=23)
+mess1.place(x=110,y=460,width=242,height=23)
 mess2 = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="#1E1E1E",text="Nagy Pál",font=('Inter',16,'bold'),anchor='w')
-mess2.place(x=310,y=519,width=242,height=23)
+mess2.place(x=110,y=519,width=242,height=23)
 mess3 = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="#1E1E1E",text="Kis László",font=('Inter',16,'bold'),anchor='w')
-mess3.place(x=310,y=581,width=242,height=23)
+mess3.place(x=110,y=581,width=242,height=23)
 
 mess1Text = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="Beiratkozás információ",font=('Inter',16),anchor='w')
-mess1Text.place(x=578,y=460,width=242,height=23)
+mess1Text.place(x=378,y=460,width=242,height=23)
 mess2Text = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="Változás az órarendben",font=('Inter',16),anchor='w')
-mess2Text.place(x=578,y=519,width=242,height=23)
+mess2Text.place(x=378,y=519,width=242,height=23)
 mess3Text = tk.Label(canvas_kezdDiak,bg="#DBE8FF",foreground="black",text="Dolgozat információ",font=('Inter',16),anchor='w')
-mess3Text.place(x=578,y=581,width=242,height=23)
+mess3Text.place(x=378,y=581,width=242,height=23)
+
+#endregion
+
+#region Jegyek oldal
+
+canvas_jegyDiak = tk.Canvas(main,bg="#3479FF",width=800,height=700)
+canvas_jegyDiak.place(x=1000,y=0)
+
+masikOldal_jegyDiak = tk.Label(canvas_jegyDiak,bg="#ACC8FF")
+masikOldal_jegyDiak.place(x=0,y=0,width=800,height=700)
+
+canvas_jegyek = tk.Canvas(main,bg="#ACC8FF",width=800,height=700)
+canvas_jegyek.place(x=1000,y=0)
+
+frame=tk.Frame(canvas_jegyek,width=600,height=300,borderwidth=0,highlightthickness=0)
+frame.pack(expand=True, fill="both", padx=100, pady=300)
+
+canvasScrollable=tk.Canvas(frame,width=600,height=300,scrollregion=(0,0,500,1500),bg="#ACC8FF",borderwidth=0,highlightthickness=0)
+vbar=tk.Scrollbar(frame,orient="vertical")
+vbar.pack(side="right",fill="y")
+vbar.config(command=canvasScrollable.yview)
+canvasScrollable.config(width=600,height=300)
+canvasScrollable.config(yscrollcommand=vbar.set)
 
 #endregion
 
