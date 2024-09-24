@@ -140,9 +140,19 @@ def DiakBej():
                                 atlagKep["image"] = jegyKivalo
                                 atlagText["bg"] = "#005e09"
 
+            #Saját profil oldal megcsinálása
+            utolso3jegy = f"SELECT diak_jelszo,diak_szuletes,diak_telefon FROM diak WHERE diak_id LIKE '{ud}' AND diak_jelszo = '{pd}'"
+            cursor.execute(utolso3jegy)
+            tableAdatok = cursor.fetchall()
+            pSz["text"] = tableAdatok[0][1]
+            pT["text"] = tableAdatok[0][2]
+            pJ["text"] = tableAdatok[0][0]
+
             canvas_bej.place(x=1000,y=0)
             canvas_kezdDiak.place(x=200,y=0)
             canvas_oldalMenu.place(x=0,y=0)
+
+
         else:
             print("Rossz név vagy jelszó!")
     
@@ -171,6 +181,7 @@ def jegyreKattint(tanId):
 
     canvas_jegyek.create_image(74,15,anchor="nw",image=nagyKocka)
 
+    nums = nums[::-1]
     ugras = 500/len(nums)
     l = nums[0]
     for i in range(1,len(nums)+1):
@@ -211,6 +222,8 @@ def backToJegyek():
 def DiakKezd():
     canvas_jegyDiak.place(x=1000,y=0)
     canvas_kezdDiak.place(x=200,y=0)
+    canvas_profDiak.place(x=1000,y=0)
+    canvas_jegyek.place(x=1000,y=0)
 
     fooldal_btn["image"] = fooldal_selected
     orak_btn["image"] = orakBtn
@@ -221,6 +234,8 @@ def DiakKezd():
 def DiakJegy():
     canvas_kezdDiak.place(x=1000,y=0)
     canvas_jegyDiak.place(x=200,y=0)
+    canvas_profDiak.place(x=1000,y=0)
+    canvas_jegyek.place(x=1000,y=0)
 
     fooldal_btn["image"] = fooldalBtn
     orak_btn["image"] = orakBtn
@@ -228,11 +243,20 @@ def DiakJegy():
     infok_btn["image"] = infokBtn
     profil_btn["image"] = profilBtn
 
+def DiakProfil():
+    canvas_kezdDiak.place(x=1000,y=0)
+    canvas_jegyDiak.place(x=1000,y=0)
+    canvas_profDiak.place(x=200,y=0)
+    canvas_jegyek.place(x=1000,y=0)
 
-
+    fooldal_btn["image"] = fooldalBtn
+    orak_btn["image"] = orakBtn
+    jegyek_btn["image"] = jegyekBtn
+    infok_btn["image"] = infokBtn
+    profil_btn["image"] = profil_selected
 
 main = tk.Tk()
-ctypes.windll.shcore.SetProcessDpiAwareness(1)
+#ctypes.windll.shcore.SetProcessDpiAwareness(1)
 main.geometry("1000x700")
 main.resizable(False, False)
 main.title("Kréta")
@@ -250,8 +274,11 @@ img_btn=image_btn.resize((155, 45))
 fooldal_selected=ImageTk.PhotoImage(img_btn)
 
 image_btn=Image.open(f'./pics/infokBtn.png')
-img_btn=image_btn.resize((82, 25))
+img_btn=image_btn.resize((121, 25))
 infokBtn=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/infok_selected.png')
+img_btn=image_btn.resize((155, 45))
+infok_selected=ImageTk.PhotoImage(img_btn)
 
 image_btn=Image.open(f'./pics/jegyekBtn.png')
 img_btn=image_btn.resize((102, 25))
@@ -267,6 +294,9 @@ orakBtn=ImageTk.PhotoImage(img_btn)
 image_btn=Image.open(f'./pics/profilBtn.png')
 img_btn=image_btn.resize((137, 25))
 profilBtn=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/profil_selected.png')
+img_btn=image_btn.resize((155, 45))
+profil_selected=ImageTk.PhotoImage(img_btn)
 
 image_btn=Image.open(f'./pics/kijelentBtn.png')
 img_btn=image_btn.resize((158, 25))
@@ -317,6 +347,23 @@ nagyKocka=ImageTk.PhotoImage(img_btn)
 image_btn=Image.open(f'./pics/jegyElvalaszto.png')
 img_btn=image_btn.resize((3, 26))
 jegyElvalaszto=ImageTk.PhotoImage(img_btn)
+
+image_btn=Image.open(f'./pics/szuletesnapV.png')
+img_btn=image_btn.resize((300, 51))
+szuletesnapV=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jelszoV.png')
+img_btn=image_btn.resize((300, 51))
+jelszoV=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/telefonV.png')
+img_btn=image_btn.resize((300, 51))
+telefonV=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/profilFejlec.png')
+img_btn=image_btn.resize((700, 75))
+profilFejlec=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/profilAdatok.png')
+img_btn=image_btn.resize((700, 230))
+profilAdatok=ImageTk.PhotoImage(img_btn)
+
 #endregion
 
 #region Bejelentkezés ablak
@@ -421,7 +468,7 @@ infok_btn["bg"] = "#3479FF"
 infok_btn["activebackground"] = "#3479FF"
 infok_btn["border"] = "0"
 infok_btn.place(x=29,y=297)
-profil_btn = tk.Button(canvas_oldalMenu,image=profilBtn)
+profil_btn = tk.Button(canvas_oldalMenu,image=profilBtn,command=DiakProfil)
 profil_btn["bg"] = "#3479FF"
 profil_btn["activebackground"] = "#3479FF"
 profil_btn["border"] = "0"
@@ -529,6 +576,61 @@ vbar.pack(side="right",fill="y")
 vbar.config(command=canvasScrollable.yview)
 canvasScrollable.config(width=600,height=300)
 canvasScrollable.config(yscrollcommand=vbar.set)
+
+#endregion
+
+#region Saját profil oldal diáknak
+
+canvas_profDiak = tk.Canvas(main,bg="#F1F1F1",width=800,height=700)
+canvas_profDiak.place(x=1000,y=0)
+
+fejlec = tk.Label(canvas_profDiak,image=profilFejlec)
+fejlec.place(x=50,y=15)
+
+adatok = tk.Label(canvas_profDiak,image=profilAdatok)
+adatok.place(x=50,y=117)
+
+valszuletes = tk.Button(canvas_profDiak,image=szuletesnapV,command=lambda : print("Szuletes"))
+valszuletes["bg"] = "#F1F1F1"
+valszuletes["activebackground"] = "#F1F1F1"
+valszuletes["border"] = "0"
+valszuletes.place(x=244,y=393)
+
+valtelefon = tk.Button(canvas_profDiak,image=telefonV,command=lambda : print("Telefon"))
+valtelefon["bg"] = "#F1F1F1"
+valtelefon["activebackground"] = "#F1F1F1"
+valtelefon["border"] = "0"
+valtelefon.place(x=244,y=476)
+
+valjelszo = tk.Button(canvas_profDiak,image=jelszoV,command=lambda : print("Jelszo"))
+valjelszo["bg"] = "#F1F1F1"
+valjelszo["activebackground"] = "#F1F1F1"
+valjelszo["border"] = "0"
+valjelszo.place(x=244,y=555)
+
+kisbetusresz = tk.Label(canvas_profDiak,text="Probélma esetén kérjük küldjenek levelet az\nadmin@kamukreta.com email címre.",font=('Inter',8))
+kisbetusresz.place(x=272,y=644)
+
+
+profilNev = tk.Label(canvas_profDiak,bg="#C7C7C7",text="",font=('Inter',20,'bold'))
+profilNev.place(x=400,y=136)
+
+profilSzuletes = tk.Label(canvas_profDiak,bg="#C7C7C7",text="Születésnap: ",font=('Inter',16,'bold'))
+profilSzuletes.place(x=300,y=190)
+profilTelefon = tk.Label(canvas_profDiak,bg="#C7C7C7",text="Telefonszám: ",font=('Inter',16,'bold'))
+profilTelefon.place(x=300,y=240)
+profilJelszo = tk.Label(canvas_profDiak,bg="#C7C7C7",text="Jelszó: ",font=('Inter',16,'bold'))
+profilJelszo.place(x=300,y=290)
+
+pSz = tk.Label(canvas_profDiak,bg="#C7C7C7",text="",font=('Inter',16))
+pSz.place(x=440,y=190)
+pT = tk.Label(canvas_profDiak,bg="#C7C7C7",text="",font=('Inter',16))
+pT.place(x=450,y=240)
+pJ = tk.Label(canvas_profDiak,bg="#C7C7C7",text="",font=('Inter',16))
+pJ.place(x=380,y=290)
+#endregion
+
+#region Üzenőfal oldal diáknak
 
 #endregion
 
