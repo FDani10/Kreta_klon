@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Sze 24. 18:55
+-- Létrehozás ideje: 2024. Sze 26. 21:50
 -- Kiszolgáló verziója: 10.4.21-MariaDB
 -- PHP verzió: 8.0.11
 
@@ -19566,34 +19566,37 @@ INSERT INTO `osztaly` (`osztaly_id`, `osztaly_nev`) VALUES
 CREATE TABLE `tanar` (
   `tanar_id` int(11) NOT NULL,
   `tanar_nev` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `tanar_jelszo` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL
+  `tanar_jelszo` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL,
+  `tanar_email` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
+  `tanar_telefon` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
+  `tanar_felnev` varchar(7) COLLATE utf8_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
 -- A tábla adatainak kiíratása `tanar`
 --
 
-INSERT INTO `tanar` (`tanar_id`, `tanar_nev`, `tanar_jelszo`) VALUES
-(1, 'Kovács László', NULL),
-(2, 'Nagy Ágnes', NULL),
-(3, 'Tóth Péter', NULL),
-(4, 'Szabó Erika', NULL),
-(5, 'Varga József', NULL),
-(6, 'Horváth Katalin', NULL),
-(7, 'Kiss Zoltán', NULL),
-(8, 'Molnár Anikó', NULL),
-(9, 'Farkas Gábor', NULL),
-(10, 'Balogh István', NULL),
-(11, 'Simon Gabriella', NULL),
-(12, 'Németh András', NULL),
-(13, 'Papp Judit', NULL),
-(14, 'Takács Ferenc', NULL),
-(15, 'Fekete Edit', NULL),
-(16, 'Vass Tamás', NULL),
-(17, 'Barta Mária', NULL),
-(18, 'Somogyi Dénes', NULL),
-(19, 'Mészáros Ildikó', NULL),
-(20, 'Lakatos Béla', NULL);
+INSERT INTO `tanar` (`tanar_id`, `tanar_nev`, `tanar_jelszo`, `tanar_email`, `tanar_telefon`, `tanar_felnev`) VALUES
+(1, 'Nagy Evelin', 'password', 'nagy.evelin@tanar.hu', '06203456712', 'A7Z9T3B'),
+(2, 'Kovács Béla', 'password', 'kovacs.bela@tanar.hu', '06204567891', 'X9L8Q2D'),
+(3, 'Szabó Katalin', 'password', 'szabo.katalin@tanar.hu', '06201234567', 'P5J7F2L'),
+(4, 'Tóth Ferenc', 'password', 'toth.ferenc@tanar.hu', '06205678912', 'W3N2S7V'),
+(5, 'Varga Mária', 'password', 'varga.maria@tanar.hu', '06202345678', 'R8K6H3N'),
+(6, 'Kiss József', 'password', 'kiss.jozsef@tanar.hu', '06203456987', 'Y4G5T9M'),
+(7, 'Molnár Gábor', 'password', 'molnar.gabor@tanar.hu', '06201236789', 'H6F2L8Q'),
+(8, 'Balogh László', 'password', 'balogh.laszlo@tanar.hu', '06207891234', 'T3P9V7X'),
+(9, 'Simon Zoltán', 'password', 'simon.zoltan@tanar.hu', '06205672345', 'K9X4M6S'),
+(10, 'Lukács Anna', 'password', 'lukacs.anna@tanar.hu', '06203457123', 'Z1W5N8Q'),
+(11, 'Farkas Éva', 'password', 'farkas.eva@tanar.hu', '06204561278', 'L6Y3T8R'),
+(12, 'Oláh Imre', 'password', 'olah.imre@tanar.hu', '06203456901', 'Q2D7H5K'),
+(13, 'Kelemen Erika', 'password', 'kelemen.erika@tanar.hu', '06201234578', 'E7P4N9V'),
+(14, 'Szekeres Péter', 'password', 'szekeres.peter@tanar.hu', '06207891245', 'C9L6X3S'),
+(15, 'Veres Róbert', 'password', 'veres.robert@tanar.hu', '06203456934', 'U3W9T8Q'),
+(16, 'Fekete Júlia', 'password', 'fekete.julia@tanar.hu', '06203457891', 'M7X2K6P'),
+(17, 'Szilágyi István', 'password', 'szilagyi.istvan@tanar.hu', '06204561234', 'B5L4H3S'),
+(18, 'Horváth Zsuzsa', 'password', 'horvath.zsuzsa@tanar.hu', '06203456723', 'N2J7V5X'),
+(19, 'Sipos Tamás', 'password', 'sipos.tamas@tanar.hu', '06207891212', 'V9G3Y6P'),
+(20, 'Bodnár Lili', 'password', 'bodnar.lili@tanar.hu', '06203456945', 'F6W8T9M');
 
 -- --------------------------------------------------------
 
@@ -19854,6 +19857,62 @@ CREATE TABLE `uzenet` (
   `uzenet_text` longtext COLLATE utf8_hungarian_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
+--
+-- A tábla adatainak kiíratása `uzenet`
+--
+
+INSERT INTO `uzenet` (`uzenet_id`, `tanar_id`, `uzenet_targy`, `uzenet_text`) VALUES
+(1, 6, 'Óraelmaradás', 'A holnapi matekóra elmarad. Pótlás később.'),
+(2, 17, 'Téli szünet', 'Kellemes téli szünetet kívánok mindenkinek!'),
+(3, 6, 'Teremváltozás', 'Holnaptól a fizikaórákat a 201-es teremben tartjuk.'),
+(4, 16, 'Dolgozat', 'Jövő héten dolgozat lesz matematikából, készüljetek!'),
+(5, 5, 'Félévi eredmények', 'A félévi eredményeket holnap osztom ki az órán.'),
+(6, 15, 'Pótló dolgozat', 'Pénteken pótoljuk a múlt heti elmaradt dolgozatot.'),
+(7, 20, 'Szülői értekezlet', 'Kérlek, értesítsétek a szülőket, hogy jövő hétfőn szülői értekezlet lesz.'),
+(8, 13, 'Szüneti program', 'A szünet utáni első hét programjairól küldök egy összefoglalót hamarosan.'),
+(9, 6, 'Előadás', 'Jövő hét szerdán egy vendégelőadót fogadunk az osztályban.'),
+(10, 10, 'Fakultatív program', 'Lehetőség van fakultatív programra pénteken. Jelentkezni nálam lehet.'),
+(11, 13, 'Osztálykirándulás', 'Az osztálykirándulás időpontja megváltozott, új dátum: október 10.'),
+(12, 15, 'Zárthelyi dolgozat', 'A hétfői órán zárthelyi dolgozatot írunk, kérlek, készüljetek.'),
+(13, 12, 'Kiselőadások', 'A jövő héten tartjuk a kiselőadásokat, készülj fel a témádból!'),
+(14, 18, 'Projektmunka', 'A csoportos projektmunkát a következő órán elkezdjük.'),
+(15, 14, 'Óraváltozás', 'Csütörtökön a 3. óra helyett a 2. órában lesz az angol.'),
+(16, 12, 'Könyvtárlátogatás', 'Holnap délután közös könyvtárlátogatásra megyünk.'),
+(17, 20, 'Házi feladat', 'Ne feledjétek beadni a házi feladatot a következő óra elején.'),
+(18, 3, 'Változás', 'A következő hónapban a hétfői órákat a délutáni sávban tartjuk.'),
+(19, 15, 'Záróvizsga', 'Készüljetek a félévi záróvizsgára, amit két hét múlva tartunk.'),
+(20, 6, 'Téma ismertetés', 'A következő órán átbeszéljük a következő témakör főbb pontjait.'),
+(21, 4, 'Szorgalmi feladat', 'Extra szorgalmi feladat lehetőség, jelentkezni péntekig lehet.'),
+(22, 1, 'Emlékeztető', 'Ne felejtsétek el, hogy pénteken nincs tanítás.'),
+(23, 14, 'Csoportmunka', 'A következő héten csoportmunkában fogunk dolgozni.'),
+(24, 5, 'Színházlátogatás', 'Jövő hét pénteken közösen megyünk színházba.'),
+(25, 3, 'Témaváltás', 'Kedden új témakörbe kezdünk, előre olvassátok el a 3. fejezetet.'),
+(26, 17, 'Verseny jelentkezés', 'Lehetőség van jelentkezni a következő iskolai versenyre.'),
+(27, 19, 'Félév végi teendők', 'Az év végi projekt leadási határideje december 15.'),
+(28, 3, 'Tanulmányi kirándulás', 'A tanulmányi kirándulás időpontja a következő héten pénteken lesz.'),
+(29, 18, 'Előadás', 'A jövő héten vendégelőadónk lesz, gyertek pontosan.'),
+(30, 20, 'Érettségi konzultáció', 'Érettségi konzultáció időpontja: hétfő délután 3-kor.'),
+(31, 1, 'Osztályfotózás', 'Jövő hét szerdán lesz az osztályfotózás. Kérlek, mindenki pontosan jelenjen meg.'),
+(32, 20, 'Könyvleadás', 'Ne feledjétek, hogy pénteken le kell adni a kölcsönzött tankönyveket.'),
+(33, 20, 'Új házi feladat', 'A következő órára új házi feladatot kaptok, részletek a Classroom-on.'),
+(34, 18, 'Vizsgafelkészítő', 'Szombaton vizsgafelkészítőt tartok, aki szeretne, jöjjön el.'),
+(35, 10, 'Konzultáció', 'A héten minden nap délután 2-től konzultáció lehetőség van a dolgozatra.'),
+(36, 14, 'Online óra', 'A jövő heti órák online lesznek megtartva. Csatlakozzatok a megadott linken.'),
+(37, 19, 'Óraközi szünet', 'A holnapi napra extra szünetet kaptok, a harmadik óra után.'),
+(38, 13, 'Múzeumlátogatás', 'Következő hétfőn múzeumlátogatásra megyünk, részletek később.'),
+(39, 6, 'Osztálytalálkozó', 'Jövő szerdán délután osztálytalálkozó lesz a tornateremben.'),
+(40, 11, 'Projekt beadása', 'A projekt beadási határideje a következő hét péntek.'),
+(41, 19, 'Következő dolgozat témája', 'A következő dolgozat a 4-6. fejezetből lesz, tanuljatok!'),
+(42, 19, 'Tesi felszerelés', 'Ne felejtsétek elhozni a tesi felszereléseteket csütörtökre!'),
+(43, 19, 'Nyílt nap', 'A jövő hétfőn nyílt nap lesz, szívesen látunk minden érdeklődőt.'),
+(44, 16, 'Vizsgaidőpontok', 'A félév végi vizsgák időpontjait elküldöm a következő hét elején.'),
+(45, 5, 'Ünnepség', 'Az iskolai ünnepség csütörtökön lesz a díszteremben, kötelező megjelenés.'),
+(46, 13, 'Tankönyvosztás', 'A jövő héten tankönyvosztás lesz, mindenki hozza magával a régi könyveit.'),
+(47, 13, 'Választható tantárgyak', 'A következő félév választható tantárgyairól információt küldök holnap.'),
+(48, 4, 'Kirándulás jelentkezés', 'Aki szeretne részt venni a kiránduláson, kérem, hétfőig jelezze.'),
+(49, 1, 'Karácsonyi műsor', 'Készüljetek a karácsonyi műsorra, amit december 20-án tartunk.'),
+(50, 14, 'Felzárkóztató órák', 'Akinek szüksége van, az csatlakozzon a felzárkóztató órákhoz jövő héttől.');
+
 -- --------------------------------------------------------
 
 --
@@ -19864,6 +19923,62 @@ CREATE TABLE `uzenetkinek` (
   `uzenet_id` int(11) NOT NULL,
   `osztaly_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `uzenetkinek`
+--
+
+INSERT INTO `uzenetkinek` (`uzenet_id`, `osztaly_id`) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7),
+(8, 8),
+(9, 9),
+(10, 10),
+(11, 11),
+(12, 12),
+(13, 13),
+(14, 14),
+(15, 15),
+(16, 16),
+(17, 17),
+(18, 18),
+(19, 19),
+(20, 20),
+(21, 21),
+(22, 22),
+(23, 23),
+(24, 24),
+(25, 1),
+(26, 2),
+(27, 3),
+(28, 4),
+(29, 5),
+(30, 6),
+(31, 7),
+(32, 8),
+(33, 9),
+(34, 10),
+(35, 11),
+(36, 12),
+(37, 13),
+(38, 14),
+(39, 15),
+(40, 16),
+(41, 17),
+(42, 18),
+(43, 19),
+(44, 20),
+(45, 21),
+(46, 22),
+(47, 23),
+(48, 24),
+(49, 5),
+(50, 6);
 
 --
 -- Indexek a kiírt táblákhoz
@@ -19895,7 +20010,8 @@ ALTER TABLE `osztaly`
 -- A tábla indexei `tanar`
 --
 ALTER TABLE `tanar`
-  ADD PRIMARY KEY (`tanar_id`);
+  ADD PRIMARY KEY (`tanar_id`),
+  ADD UNIQUE KEY `tanar_felnev` (`tanar_felnev`);
 
 --
 -- A tábla indexei `tanora`
@@ -19964,7 +20080,7 @@ ALTER TABLE `tantargy`
 -- AUTO_INCREMENT a táblához `uzenet`
 --
 ALTER TABLE `uzenet`
-  MODIFY `uzenet_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `uzenet_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- Megkötések a kiírt táblákhoz
@@ -19987,9 +20103,9 @@ ALTER TABLE `jegy`
 -- Megkötések a táblához `tanora`
 --
 ALTER TABLE `tanora`
-  ADD CONSTRAINT `tanora_ibfk_1` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `tanora_ibfk_2` FOREIGN KEY (`tantargy_id`) REFERENCES `tantargy` (`tantargy_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `tanora_ibfk_3` FOREIGN KEY (`osztaly_id`) REFERENCES `osztaly` (`osztaly_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tanora_ibfk_3` FOREIGN KEY (`osztaly_id`) REFERENCES `osztaly` (`osztaly_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tanora_ibfk_4` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Megkötések a táblához `uzenet`

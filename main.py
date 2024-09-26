@@ -146,12 +146,31 @@ def DiakBej():
             tableAdatok = cursor.fetchall()
             pSz["text"] = tableAdatok[0][1]
             pT["text"] = tableAdatok[0][2]
-            pJ["text"] = tableAdatok[0][0]
+            pJ["text"] = f"{tableAdatok[0][0][0]}{((len(tableAdatok[0][0]))-2)*'*'}{tableAdatok[0][0][(len(tableAdatok[0][0]))-1]}"
 
             canvas_bej.place(x=1000,y=0)
             canvas_kezdDiak.place(x=200,y=0)
             canvas_oldalMenu.place(x=0,y=0)
 
+            #Üzenetek oldal megcsinálása
+            querry = f"SELECT tanar.tanar_nev,uzenet.uzenet_targy, LEFT(uzenet.uzenet_text,70) FROM `diak` inner join osztaly on osztaly.osztaly_id = diak.diak_osztaly INNER JOIN uzenetkinek on uzenetkinek.osztaly_id = osztaly.osztaly_id inner JOIN uzenet on uzenet.uzenet_id = uzenetkinek.uzenet_id inner JOIN tanar on tanar.tanar_id = uzenet.tanar_id WHERE diak_id = {diakID};"
+            cursor.execute(querry)
+            uzenetek = cursor.fetchall()
+            for i in range(0,len(uzenetek)):
+                uzenet = tk.Label(canvas_uziScroll,image=uzenetTartalom,bg="#D9D9D9")
+                canvas_uziScroll.create_window(328, 70+i*120, window=uzenet)
+
+                uzenet_targy = tk.Label(canvas_uziScroll,bg="#F4F3F3",text=f"{uzenetek[i][0]} | {uzenetek[i][1]}",font=('Inter',20,'bold'))
+                canvas_uziScroll.create_window(20, 50+i*120, window=uzenet_targy,anchor="w")
+
+                uzenet_targy = tk.Label(canvas_uziScroll,bg="#F4F3F3",text=f"{uzenetek[i][2]}",font=('Inter',12))
+                canvas_uziScroll.create_window(20, 80+i*120, window=uzenet_targy,anchor="w")
+                if len(uzenetek[i][2]) == 70:
+                    uzenet_targy["text"] = f"{uzenetek[i][2]}..."
+            canvas_uziScroll["scrollregion"]=(0,0,500,len(uzenetek)*120+70)
+
+            #Órák oldal megcsinálása
+            
 
         else:
             print("Rossz név vagy jelszó!")
@@ -224,6 +243,7 @@ def DiakKezd():
     canvas_kezdDiak.place(x=200,y=0)
     canvas_profDiak.place(x=1000,y=0)
     canvas_jegyek.place(x=1000,y=0)
+    canvas_uzenetDiak.place(x=1000,y=0)
 
     fooldal_btn["image"] = fooldal_selected
     orak_btn["image"] = orakBtn
@@ -236,6 +256,7 @@ def DiakJegy():
     canvas_jegyDiak.place(x=200,y=0)
     canvas_profDiak.place(x=1000,y=0)
     canvas_jegyek.place(x=1000,y=0)
+    canvas_uzenetDiak.place(x=1000,y=0)
 
     fooldal_btn["image"] = fooldalBtn
     orak_btn["image"] = orakBtn
@@ -248,12 +269,26 @@ def DiakProfil():
     canvas_jegyDiak.place(x=1000,y=0)
     canvas_profDiak.place(x=200,y=0)
     canvas_jegyek.place(x=1000,y=0)
+    canvas_uzenetDiak.place(x=1000,y=0)
 
     fooldal_btn["image"] = fooldalBtn
     orak_btn["image"] = orakBtn
     jegyek_btn["image"] = jegyekBtn
     infok_btn["image"] = infokBtn
     profil_btn["image"] = profil_selected
+
+def DiakUzenet():
+    canvas_kezdDiak.place(x=1000,y=0)
+    canvas_jegyDiak.place(x=1000,y=0)
+    canvas_profDiak.place(x=1000,y=0)
+    canvas_jegyek.place(x=1000,y=0)
+    canvas_uzenetDiak.place(x=200,y=0)
+
+    fooldal_btn["image"] = fooldalBtn
+    orak_btn["image"] = orakBtn
+    jegyek_btn["image"] = jegyekBtn
+    infok_btn["image"] = infok_selected
+    profil_btn["image"] = profilBtn
 
 main = tk.Tk()
 #ctypes.windll.shcore.SetProcessDpiAwareness(1)
@@ -364,6 +399,16 @@ image_btn=Image.open(f'./pics/profilAdatok.png')
 img_btn=image_btn.resize((700, 230))
 profilAdatok=ImageTk.PhotoImage(img_btn)
 
+image_btn=Image.open(f'./pics/uzenetBG.png')
+img_btn=image_btn.resize((700, 530))
+uzenetBG=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/uzenetTartalom.png')
+img_btn=image_btn.resize((650, 95))
+uzenetTartalom=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/uzenetFejlec.png')
+img_btn=image_btn.resize((700, 75))
+uzenetFejlec=ImageTk.PhotoImage(img_btn)
+
 #endregion
 
 #region Bejelentkezés ablak
@@ -463,7 +508,7 @@ jegyek_btn["bg"] = "#3479FF"
 jegyek_btn["activebackground"] = "#3479FF"
 jegyek_btn["border"] = "0"
 jegyek_btn.place(x=29,y=242)
-infok_btn = tk.Button(canvas_oldalMenu,image=infokBtn)
+infok_btn = tk.Button(canvas_oldalMenu,image=infokBtn,command=DiakUzenet)
 infok_btn["bg"] = "#3479FF"
 infok_btn["activebackground"] = "#3479FF"
 infok_btn["border"] = "0"
@@ -608,7 +653,7 @@ valjelszo["activebackground"] = "#F1F1F1"
 valjelszo["border"] = "0"
 valjelszo.place(x=244,y=555)
 
-kisbetusresz = tk.Label(canvas_profDiak,text="Probélma esetén kérjük küldjenek levelet az\nadmin@kamukreta.com email címre.",font=('Inter',8))
+kisbetusresz = tk.Label(canvas_profDiak,text="Probléma esetén kérjük küldjenek levelet az\nadmin@kamukreta.com email címre.",font=('Inter',8))
 kisbetusresz.place(x=272,y=644)
 
 
@@ -631,7 +676,27 @@ pJ.place(x=380,y=290)
 #endregion
 
 #region Üzenőfal oldal diáknak
+canvas_uzenetDiak = tk.Canvas(main,bg="#FAFAFA",width=800,height=700)
+canvas_uzenetDiak.place(x=1000,y=0)
 
+fejlec = tk.Label(canvas_uzenetDiak,image=uzenetFejlec,bg="#FAFAFA")
+fejlec.place(x=50,y=11)
+
+HatterCanvas = tk.Label(canvas_uzenetDiak,image=uzenetBG,bg="#FAFAFA")
+HatterCanvas.place(x=50,y=130)
+
+frame=tk.Frame(canvas_uzenetDiak,width=660,height=480,bg="#D9D9D9")
+frame.pack(expand=True, fill="both", padx=72, pady=155) #.grid(row=0,column=0)
+canvas_uziScroll=tk.Canvas(frame,width=660,height=480,scrollregion=(0,0,500,1500),bg="#D9D9D9",borderwidth=0,highlightthickness=0)
+vbar=tk.Scrollbar(frame,orient="vertical")
+vbar.pack(side="right",fill="y")
+vbar.config(command=canvas_uziScroll.yview)
+canvas_uziScroll.config(width=660,height=480)
+canvas_uziScroll.config(yscrollcommand=vbar.set)
+canvas_uziScroll.pack(side="left",expand=True,fill="both")
 #endregion
 
+#region Órák oldal diáknak
+
+#endregion
 main.mainloop()

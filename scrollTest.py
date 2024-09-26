@@ -1,3 +1,5 @@
+# 3 órámba telt, mire rájöttem hogy kell ezt. No cap.
+
 from tkinter import *
 root=Tk()
 root.geometry("800x700")
