@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Gép: 127.0.0.1
--- Létrehozás ideje: 2024. Sze 26. 21:50
--- Kiszolgáló verziója: 10.4.21-MariaDB
--- PHP verzió: 8.0.11
+-- Gép: localhost
+-- Létrehozás ideje: 2024. Sze 27. 12:46
+-- Kiszolgáló verziója: 10.4.28-MariaDB
+-- PHP verzió: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,11 +29,11 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `diak` (
   `diak_id` int(11) NOT NULL,
-  `diak_nev` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
+  `diak_nev` varchar(255) NOT NULL,
   `diak_osztaly` int(11) DEFAULT NULL,
-  `diak_jelszo` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL,
+  `diak_jelszo` varchar(255) DEFAULT NULL,
   `diak_szuletes` date DEFAULT NULL,
-  `diak_telefon` varchar(11) COLLATE utf8_hungarian_ci DEFAULT NULL
+  `diak_telefon` varchar(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -281,6 +281,21 @@ INSERT INTO `diak` (`diak_id`, `diak_nev`, `diak_osztaly`, `diak_jelszo`, `diak_
 (9832417, 'Lakatos Nóra', 12, 'password', '2015-01-22', '06408213373'),
 (9835741, 'Simon Dávid', 2, 'password', '2019-09-23', '06403586484'),
 (9841372, 'Fazekas Levente', 24, 'password', '2018-07-22', '06409958968');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `hianyzasok`
+--
+
+CREATE TABLE `hianyzasok` (
+  `hianyzasok_id` int(11) NOT NULL,
+  `diak_id` int(11) NOT NULL,
+  `tanora_id` int(11) NOT NULL,
+  `tanar_id` int(11) NOT NULL,
+  `kezdet` date NOT NULL,
+  `vege` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
 
@@ -19524,7 +19539,7 @@ INSERT INTO `jegy` (`jegy_id`, `tanora_id`, `diak_id`, `beirt_jegy`, `jegy_ido`)
 
 CREATE TABLE `osztaly` (
   `osztaly_id` int(11) NOT NULL,
-  `osztaly_nev` varchar(255) COLLATE utf8_hungarian_ci NOT NULL
+  `osztaly_nev` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -19565,11 +19580,11 @@ INSERT INTO `osztaly` (`osztaly_id`, `osztaly_nev`) VALUES
 
 CREATE TABLE `tanar` (
   `tanar_id` int(11) NOT NULL,
-  `tanar_nev` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `tanar_jelszo` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL,
-  `tanar_email` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `tanar_telefon` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `tanar_felnev` varchar(7) COLLATE utf8_hungarian_ci NOT NULL
+  `tanar_nev` varchar(255) NOT NULL,
+  `tanar_jelszo` varchar(255) DEFAULT NULL,
+  `tanar_email` varchar(255) NOT NULL,
+  `tanar_telefon` varchar(255) NOT NULL,
+  `tanar_felnev` varchar(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -19817,7 +19832,7 @@ INSERT INTO `tanora` (`tanora_id`, `tanar_id`, `osztaly_id`, `tantargy_id`) VALU
 
 CREATE TABLE `tantargy` (
   `tantargy_id` int(11) NOT NULL,
-  `tantargy_nev` varchar(255) COLLATE utf8_hungarian_ci NOT NULL
+  `tantargy_nev` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -19853,8 +19868,8 @@ INSERT INTO `tantargy` (`tantargy_id`, `tantargy_nev`) VALUES
 CREATE TABLE `uzenet` (
   `uzenet_id` int(11) NOT NULL,
   `tanar_id` int(11) NOT NULL,
-  `uzenet_targy` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `uzenet_text` longtext COLLATE utf8_hungarian_ci NOT NULL
+  `uzenet_targy` varchar(255) NOT NULL,
+  `uzenet_text` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -19992,6 +20007,15 @@ ALTER TABLE `diak`
   ADD KEY `diak_osztaly` (`diak_osztaly`);
 
 --
+-- A tábla indexei `hianyzasok`
+--
+ALTER TABLE `hianyzasok`
+  ADD PRIMARY KEY (`hianyzasok_id`),
+  ADD KEY `diak_id` (`diak_id`,`tanora_id`,`tanar_id`),
+  ADD KEY `tanar_id` (`tanar_id`),
+  ADD KEY `tanora_id` (`tanora_id`);
+
+--
 -- A tábla indexei `jegy`
 --
 ALTER TABLE `jegy`
@@ -20047,6 +20071,12 @@ ALTER TABLE `uzenetkinek`
 --
 
 --
+-- AUTO_INCREMENT a táblához `hianyzasok`
+--
+ALTER TABLE `hianyzasok`
+  MODIFY `hianyzasok_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT a táblához `jegy`
 --
 ALTER TABLE `jegy`
@@ -20091,6 +20121,14 @@ ALTER TABLE `uzenet`
 --
 ALTER TABLE `diak`
   ADD CONSTRAINT `diak_ibfk_1` FOREIGN KEY (`diak_osztaly`) REFERENCES `osztaly` (`osztaly_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `hianyzasok`
+--
+ALTER TABLE `hianyzasok`
+  ADD CONSTRAINT `hianyzasok_ibfk_1` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `hianyzasok_ibfk_2` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `hianyzasok_ibfk_3` FOREIGN KEY (`tanora_id`) REFERENCES `tanora` (`tanora_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Megkötések a táblához `jegy`
