@@ -4,16 +4,21 @@ import mysql.connector
 import ctypes
 import math
 
-diakID = ""
+diakID = "1237658"
 
 con = mysql.connector.connect( host="localhost", user="root", password="", database="kreta_klon")
 cursor = con.cursor()
 
 
 def oraMegjelenites(oraId):
+    tantargyLekerdezes = f"SELECT tantargy.tantargy_nev,tanar.tanar_nev,tanar.tanar_email,tanar.tanar_telefon FROM `tanora` inner JOIN tanar on tanar.tanar_id = tanora.tanar_id inner JOIN tantargy on tantargy.tantargy_id = tanora.tantargy_id WHERE tanora_id = {oraId};"
+    cursor.execute(tantargyLekerdezes)
+    Tanora = cursor.fetchall()
+
+    szamonkeresekLekerdez = f"SELECT szamonkeres.szamonkeres_text,szamonkeres.szamonkeres_datum FROM `osztaly` inner JOIN tanora on tanora.osztaly_id = osztaly.osztaly_id inner JOIN szamonkeres on szamonkeres.tanora_id = tanora.tanora_id where tanora.tanora_id = {oraId};"
+    cursor.execute(szamonkeresekLekerdez)
+    Szamonkeresek = cursor.fetchall()
     print(oraId)
-
-
 
 main = tk.Tk()
 main.geometry("800x700")
@@ -32,11 +37,17 @@ szamonkeresKocka=ImageTk.PhotoImage(img_btn)
 image_btn=Image.open(f'./pics/tantargyFejlec.png')
 img_btn=image_btn.resize((765, 70))
 tantargyFejlec=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/tantargyTanarkep.png')
+img_btn=image_btn.resize((229, 224))
+tantargyTanarkep=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/visszaBtn.png')
+img_btn=image_btn.resize((186, 58))
+visszaBtn=ImageTk.PhotoImage(img_btn)
 
 canvas_jegyDiak = tk.Canvas(main,bg="#ACC8FF",width=800,height=700,borderwidth=0,highlightthickness=0)
 canvas_jegyDiak.place(x=0,y=0)
 
-tanuloTantargyak = "SELECT tanora.tanora_id, tantargy.tantargy_nev FROM `diak` inner join osztaly on osztaly.osztaly_id = diak.diak_osztaly INNER JOIN tanora on tanora.osztaly_id = osztaly.osztaly_id inner join tantargy on tantargy.tantargy_id = tanora.tantargy_id where diak.diak_id = 1237658;"
+tanuloTantargyak = f"SELECT tanora.tanora_id, tantargy.tantargy_nev FROM `diak` inner join osztaly on osztaly.osztaly_id = diak.diak_osztaly INNER JOIN tanora on tanora.osztaly_id = osztaly.osztaly_id inner join tantargy on tantargy.tantargy_id = tanora.tantargy_id where diak.diak_id = {diakID};"
 cursor.execute(tanuloTantargyak)
 Tantargyak = cursor.fetchall()
 for i in range(0,len(Tantargyak)):
@@ -62,7 +73,6 @@ for i in range(0,len(Tantargyak)):
 
 canvas_tanora = tk.Canvas(main,bg="#FAFAFA",width=800,height=700,borderwidth=0,highlightthickness=0)
 canvas_tanora.place(x=1000,y=0)
-
 
 
 main.mainloop()
