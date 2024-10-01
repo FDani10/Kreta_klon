@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Gép: localhost
--- Létrehozás ideje: 2024. Sze 27. 12:46
--- Kiszolgáló verziója: 10.4.28-MariaDB
--- PHP verzió: 8.2.4
+-- Gép: 127.0.0.1
+-- Létrehozás ideje: 2024. Okt 01. 16:47
+-- Kiszolgáló verziója: 10.4.32-MariaDB
+-- PHP verzió: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -293,9 +293,16 @@ CREATE TABLE `hianyzasok` (
   `diak_id` int(11) NOT NULL,
   `tanora_id` int(11) NOT NULL,
   `tanar_id` int(11) NOT NULL,
-  `kezdet` date NOT NULL,
-  `vege` date NOT NULL
+  `hianyzas_datum` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `hianyzasok`
+--
+
+INSERT INTO `hianyzasok` (`hianyzasok_id`, `diak_id`, `tanora_id`, `tanar_id`, `hianyzas_datum`) VALUES
+(1, 1237658, 1, 3, '2024-09-30'),
+(2, 1237658, 1, 3, '2024-09-29');
 
 -- --------------------------------------------------------
 
@@ -19575,6 +19582,26 @@ INSERT INTO `osztaly` (`osztaly_id`, `osztaly_nev`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Tábla szerkezet ehhez a táblához `szamonkeres`
+--
+
+CREATE TABLE `szamonkeres` (
+  `szamonkeres_id` int(11) NOT NULL,
+  `tanora_id` int(11) NOT NULL,
+  `szamonkeres_text` varchar(255) NOT NULL,
+  `szamonkeres_datum` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `szamonkeres`
+--
+
+INSERT INTO `szamonkeres` (`szamonkeres_id`, `tanora_id`, `szamonkeres_text`, `szamonkeres_datum`) VALUES
+(1, 1, 'Témazáró', '2024-10-03');
+
+-- --------------------------------------------------------
+
+--
 -- Tábla szerkezet ehhez a táblához `tanar`
 --
 
@@ -20031,6 +20058,13 @@ ALTER TABLE `osztaly`
   ADD KEY `osztaly_nev` (`osztaly_nev`);
 
 --
+-- A tábla indexei `szamonkeres`
+--
+ALTER TABLE `szamonkeres`
+  ADD PRIMARY KEY (`szamonkeres_id`),
+  ADD KEY `tanora_id` (`tanora_id`);
+
+--
 -- A tábla indexei `tanar`
 --
 ALTER TABLE `tanar`
@@ -20074,7 +20108,7 @@ ALTER TABLE `uzenetkinek`
 -- AUTO_INCREMENT a táblához `hianyzasok`
 --
 ALTER TABLE `hianyzasok`
-  MODIFY `hianyzasok_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `hianyzasok_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT a táblához `jegy`
@@ -20087,6 +20121,12 @@ ALTER TABLE `jegy`
 --
 ALTER TABLE `osztaly`
   MODIFY `osztaly_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT a táblához `szamonkeres`
+--
+ALTER TABLE `szamonkeres`
+  MODIFY `szamonkeres_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT a táblához `tanar`
@@ -20136,6 +20176,12 @@ ALTER TABLE `hianyzasok`
 ALTER TABLE `jegy`
   ADD CONSTRAINT `jegy_ibfk_1` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `jegy_ibfk_2` FOREIGN KEY (`tanora_id`) REFERENCES `tanora` (`tanora_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `szamonkeres`
+--
+ALTER TABLE `szamonkeres`
+  ADD CONSTRAINT `szamonkeres_ibfk_1` FOREIGN KEY (`tanora_id`) REFERENCES `tanora` (`tanora_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Megkötések a táblához `tanora`
