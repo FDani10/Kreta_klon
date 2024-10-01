@@ -16,7 +16,7 @@ def visszaOrakra():
     canvas_jobbSc.delete("all")
     canvas_balSC.delete("all")
 
-    canvas_jegyDiak.place(x=0,y=0)
+    canvas_orakDiak.place(x=0,y=0)
     canvas_tanora.place(x=1000,y=0)
 
 def oraMegjelenites(oraId):
@@ -37,7 +37,6 @@ def oraMegjelenites(oraId):
 
     if len(Hianyzasok) > 0:
         for i in range(0,len(Hianyzasok)):
-            print(Hianyzasok[i][0])
             hianyBG = tk.Label(canvas_balSC,image=hianyzasBlokk,bg="#DBE8FF")
             canvas_balSC.create_window(0,0+(i*60),window=hianyBG,anchor="nw")
 
@@ -49,7 +48,6 @@ def oraMegjelenites(oraId):
 
     if len(Szamonkeresek) > 0:
         for i in range(0,len(Szamonkeresek)):
-            print(Szamonkeresek[i][0])
             hianyBG = tk.Label(canvas_jobbSc,image=hianyzasBlokk,bg="#DBE8FF")
             canvas_jobbSc.create_window(0,0+(i*60),window=hianyBG,anchor="nw")
             
@@ -69,7 +67,7 @@ def oraMegjelenites(oraId):
     canvas_jobbSc["scrollregion"]=(0,0,500,len(Szamonkeresek)*60)
     canvas_jobbSc.pack(side="left",expand=True,fill="both")
 
-    canvas_jegyDiak.place(x=1000,y=0)
+    canvas_orakDiak.place(x=1000,y=0)
     canvas_tanora.place(x=0,y=0)
 
 main = tk.Tk()
@@ -99,8 +97,8 @@ image_btn=Image.open(f'./pics/hianyzasBlokk.png')
 img_btn=image_btn.resize((300, 48))
 hianyzasBlokk=ImageTk.PhotoImage(img_btn)
 
-canvas_jegyDiak = tk.Canvas(main,bg="#ACC8FF",width=800,height=700,borderwidth=0,highlightthickness=0)
-canvas_jegyDiak.place(x=0,y=0)
+canvas_orakDiak = tk.Canvas(main,bg="#ACC8FF",width=800,height=700,borderwidth=0,highlightthickness=0)
+canvas_orakDiak.place(x=0,y=0)
 
 tanuloTantargyak = f"SELECT tanora.tanora_id, tantargy.tantargy_nev FROM `diak` inner join osztaly on osztaly.osztaly_id = diak.diak_osztaly INNER JOIN tanora on tanora.osztaly_id = osztaly.osztaly_id inner join tantargy on tantargy.tantargy_id = tanora.tantargy_id where diak.diak_id = {diakID};"
 cursor.execute(tanuloTantargyak)
@@ -108,21 +106,21 @@ Tantargyak = cursor.fetchall()
 for i in range(0,len(Tantargyak)):
     oraId = Tantargyak[i][0]
     if i%2 == 0:
-        tantargyGomb = tk.Button(canvas_jegyDiak,image=tantargyKocka,command= lambda e = oraId : oraMegjelenites(e))
+        tantargyGomb = tk.Button(canvas_orakDiak,image=tantargyKocka,command= lambda e = oraId : oraMegjelenites(e))
         tantargyGomb["bg"] = "#ACC8FF"
         tantargyGomb["activebackground"] = "#ACC8FF"
         tantargyGomb["border"] = "0"
         tantargyGomb.place(x=70,y=100+math.floor(i/2)*130)
-        tantargyNev = tk.Label(canvas_jegyDiak,bg="#DBE8FF",foreground="black",text=Tantargyak[i][1],font=('Inter',20,'bold'))
+        tantargyNev = tk.Label(canvas_orakDiak,bg="#DBE8FF",foreground="black",text=Tantargyak[i][1],font=('Inter',20,'bold'))
         tantargyNev.bind("<Button-1>", lambda e,id = oraId : oraMegjelenites(id))
         tantargyNev.place(x=124,y=120+math.floor(i/2)*130,width=208,height=28)
     else:
-        tantargyGomb = tk.Button(canvas_jegyDiak,image=tantargyKocka,command= lambda e = oraId : oraMegjelenites(e))
+        tantargyGomb = tk.Button(canvas_orakDiak,image=tantargyKocka,command= lambda e = oraId : oraMegjelenites(e))
         tantargyGomb["bg"] = "#ACC8FF"
         tantargyGomb["activebackground"] = "#ACC8FF"
         tantargyGomb["border"] = "0"
         tantargyGomb.place(x=418,y=100+math.floor(i/2)*130)
-        tantargyNev = tk.Label(canvas_jegyDiak,bg="#DBE8FF",foreground="black",text=Tantargyak[i][1],font=('Inter',20,'bold'))
+        tantargyNev = tk.Label(canvas_orakDiak,bg="#DBE8FF",foreground="black",text=Tantargyak[i][1],font=('Inter',20,'bold'))
         tantargyNev.bind("<Button-1>", lambda e,id = oraId : oraMegjelenites(id))
         tantargyNev.place(x=472,y=120+math.floor(i/2)*130,width=208,height=28)
 
