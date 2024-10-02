@@ -29,13 +29,12 @@ def DiakBej():
             osztalyTanar = f'SELECT osztaly.osztaly_nev FROM osztaly join tanora on tanora.osztaly_id = osztaly.osztaly_id join tanar on tanora.tanar_id = tanar.tanar_id where tanar.tanar_felnev LIKE "{ut}" '
             cursor.execute(osztalyTanar)
             osztalyok = cursor.fetchall()
-            print(osztalyok[0][0])
             for i in range(0,len(osztalyok)):
                 tanId = str(osztalyok[i][0])
                 if i%2 == 0:
                     osztalyGomb = tk.Button(canvasOsztalyok,image=osztalyGombKep,command= lambda :print("jo"))
-                    osztalyGomb["bg"] = "#ACC8FF"
-                    osztalyGomb["activebackground"] = "#ACC8FF"
+                    osztalyGomb["bg"] = "#FAFAFA"
+                    osztalyGomb["activebackground"] = "#FAFAFA"
                     osztalyGomb["border"] = "0"
                     osztalyGomb.place(x=70,y=100+math.floor(i/2)*130)
                     osztalyNev = tk.Label(canvasOsztalyok,bg="#DBE8FF",foreground="black",text=osztalyok[i][0],font=('Inter',20,'bold'))
@@ -47,8 +46,8 @@ def DiakBej():
 
                 else:
                     osztalyGomb = tk.Button(canvasOsztalyok,image=osztalyGombKep,command=lambda :print("jo"))
-                    osztalyGomb["bg"] = "#ACC8FF"
-                    osztalyGomb["activebackground"] = "#ACC8FF"
+                    osztalyGomb["bg"] = "#FAFAFA"
+                    osztalyGomb["activebackground"] = "#FAFAFA"
                     osztalyGomb["border"] = "0"
                     osztalyGomb.place(x=418,y=100+math.floor(i/2)*130)
                     osztalyNev = tk.Label(canvasOsztalyok,bg="#DBE8FF",foreground="black",text=osztalyok[i][0],font=('Inter',20,'bold'))
@@ -66,17 +65,17 @@ osztalyGombKep=ImageTk.PhotoImage(osztaly_btn)
 hianyzas.geometry("1000x700")
 hianyzas.title("hianyzasok")
 
-canvasOsztalyok = tk.Canvas(hianyzas, width=800,height=700, border=0, borderwidth=0, highlightthickness=0, bg="gray")
+canvasOsztalyok = tk.Canvas(hianyzas, width=800,height=700, border=0, borderwidth=0, highlightthickness=0, bg="#FAFAFA")
 canvasOsztalyok.place(x=200, y=0)
 
 username_t= tk.Entry(canvasOsztalyok)
-username_t.pack()
+username_t.place(x=100,y=50)
 password_t =tk.Entry(canvasOsztalyok)
-password_t.pack()
+password_t.place(x=100,y=100)
 
 
 btnBej = tk.Button(canvasOsztalyok, width=10, height=10, command=DiakBej)
-btnBej.pack()
+btnBej.place(x=100,y=150)
 
 
 hianyzas.mainloop()
