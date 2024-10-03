@@ -53,11 +53,21 @@ profil_selected=ImageTk.PhotoImage(img_btn)
 image_btn=Image.open(f'./pics/kijelentBtn.png')
 img_btn=image_btn.resize((158, 25))
 kijelentBtn=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/jegyBeirBtn.png')
+img_btn=image_btn.resize((146, 25))
+jegyBeir=ImageTk.PhotoImage(img_btn)
+image_btn=Image.open(f'./pics/hianyBeirBtn.png')
+img_btn=image_btn.resize((146, 25))
+hianyBeir=ImageTk.PhotoImage(img_btn)
+
+
 
 # főoldal képek
-image_head=Image.open(f'./pics/fooldalFejlec.png')
-img_btn=image_btn.resize((700, 75))
+imagehead=Image.open(f'./pics/fooldalFejlec.png')
+img_btn=imagehead.resize((700, 75))
 foOlfdalFejlec=ImageTk.PhotoImage(img_btn)
+
+
 
 def tanarBej():
     global tanarID
@@ -190,7 +200,7 @@ canvas_tanarFo.place(x=1000, y=1000)
 canvas_tanarFoCon = tk.Canvas(canvas_tanarFo, height=700, width=800, bg="#FAFAFA")
 canvas_tanarFoCon.place(x=200, y=0)
 foOlfdalHeader = tk.Label(canvas_tanarFoCon, image=foOlfdalFejlec, width=700, height=75)
-foOlfdalHeader.place(x=10, y=20)
+foOlfdalHeader.place(x=50, y=20)
 # oldal menü
 
 canvas_oldalMenu = tk.Canvas(tanarok,bg="#3479FF",width=200,height=700)
@@ -210,12 +220,12 @@ fooldal_btn["bg"] = "#3479FF"
 fooldal_btn["activebackground"] = "#3479FF"
 fooldal_btn["border"] = "0"
 fooldal_btn.place(x=29,y=122)
-orak_btn = tk.Button(canvas_oldalMenu,image=orakBtn,command="")
+orak_btn = tk.Button(canvas_oldalMenu,image=hianyBeir,command="")
 orak_btn["bg"] = "#3479FF"
 orak_btn["activebackground"] = "#3479FF"
 orak_btn["border"] = "0"
 orak_btn.place(x=29,y=187)
-jegyek_btn = tk.Button(canvas_oldalMenu,image=jegyekBtn,command="")
+jegyek_btn = tk.Button(canvas_oldalMenu,image=jegyBeir,command="")
 jegyek_btn["bg"] = "#3479FF"
 jegyek_btn["activebackground"] = "#3479FF"
 jegyek_btn["border"] = "0"
