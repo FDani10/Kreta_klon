@@ -195,12 +195,92 @@ reg_btn2.place(x=630,y=544)
 
 
 # fő oldal tanárokhoz
+
+
 canvas_tanarFo = tk.Canvas(tanarok, height=700, width=1000)
 canvas_tanarFo.place(x=1000, y=1000)
+
+# fő oldal tanárokhoz
+
+
 canvas_tanarFoCon = tk.Canvas(canvas_tanarFo, height=700, width=800, bg="#FAFAFA")
 canvas_tanarFoCon.place(x=200, y=0)
 foOlfdalHeader = tk.Label(canvas_tanarFoCon, image=foOlfdalFejlec, width=700, height=75)
 foOlfdalHeader.place(x=50, y=20)
+def fohoz ():
+    canvas_tanarFoCon.place(x=200, y=0)
+    canvas_hianyzas.place(x=100000,y=100000)
+    canvas_tanarFo.place(x=100000,y=100000)
+    canvas_jegybeir.place(x=100000,y=100000)
+    canvas_uzeno.place(x=100000,y=100000)
+    canvas_profil.place(x=100000,y=100000)
+    
+    
+
+
+#hianyzások oldal
+canvas_hianyzas = tk.Canvas(canvas_tanarFo, height=700, width=800, bg="#FAFAFA")
+
+
+
+def hianyhoz ():
+    canvas_hianyzas.place(x=200, y=0)
+    canvas_tanarFo.place(x=100000,y=100000)
+    canvas_jegybeir.place(x=100000,y=100000)
+    canvas_uzeno.place(x=100000,y=100000)
+    canvas_profil.place(x=100000,y=100000)
+    canvas_tanarFoCon.place(x=100000,y=100000)
+
+    
+
+test2 = tk.Label(canvas_hianyzas, text="b")
+test2.place(x=100, y=100)
+
+#jegybeiros olda
+canvas_jegybeir = tk.Canvas(canvas_tanarFo, height=700, width=800, background="#FAFAFA")
+test1 = tk.Label(canvas_jegybeir, text="a")
+
+
+def jegyekhez ():
+    canvas_jegybeir.place(x=200, y=0)
+    canvas_tanarFo.place(x=100000,y=100000)
+    canvas_uzeno.place(x=100000,y=100000)
+    canvas_profil.place(x=100000,y=100000)
+    canvas_hianyzas.place(x=100000,y=100000)
+    canvas_tanarFoCon.place(x=100000,y=100000)
+
+test1.place(x=100, y=100)
+
+#uzenofal
+canvas_uzeno = tk.Canvas(canvas_tanarFo, height=700, width=800, bg="#FAFAFA")
+
+
+def uzeneshez ():
+    canvas_jegybeir.place(x=100000,y=100000)
+    canvas_tanarFo.place(x=100000,y=100000)
+    canvas_uzeno.place(x=200, y=0)
+    canvas_profil.place(x=100000,y=100000)
+    canvas_hianyzas.place(x=100000,y=100000)
+    canvas_tanarFoCon.place(x=100000,y=100000)
+
+test3 = tk.Label(canvas_uzeno, text="c")
+test3.place(x=100, y=100)
+#sajatprofil
+
+canvas_profil = tk.Canvas(canvas_tanarFo, height=700, width=800, bg="#FAFAFA")
+
+def profilhoz ():
+    canvas_jegybeir.place(x=100000,y=100000)
+    canvas_tanarFo.place(x=100000,y=100000)
+    canvas_uzeno.place(x=100000,y=100000)
+    canvas_profil.place(x=200, y=0)
+    canvas_hianyzas.place(x=100000,y=100000)
+    canvas_tanarFoCon.place(x=100000,y=100000)
+
+test4 = tk.Label(canvas_profil, text="d")
+test4.place(x=100, y=100)
+
+
 # oldal menü
 
 canvas_oldalMenu = tk.Canvas(tanarok,bg="#3479FF",width=200,height=700)
@@ -215,27 +295,27 @@ kretaLogoLabel.place(x=13,y=18)
 kretaLogoText = tk.Label(canvas_oldalMenu,bg="#3479FF",foreground="white",text="KRÉTA",font=('Inter',26,'bold'))
 kretaLogoText.place(x=54,y=18,width=121,height=39)
 
-fooldal_btn = tk.Button(canvas_oldalMenu,image=fooldal_selected,command="")
+fooldal_btn = tk.Button(canvas_oldalMenu,image=fooldal_selected,command=fohoz)
 fooldal_btn["bg"] = "#3479FF"
 fooldal_btn["activebackground"] = "#3479FF"
 fooldal_btn["border"] = "0"
 fooldal_btn.place(x=29,y=122)
-orak_btn = tk.Button(canvas_oldalMenu,image=hianyBeir,command="")
-orak_btn["bg"] = "#3479FF"
-orak_btn["activebackground"] = "#3479FF"
-orak_btn["border"] = "0"
-orak_btn.place(x=29,y=187)
-jegyek_btn = tk.Button(canvas_oldalMenu,image=jegyBeir,command="")
+hianyzas = tk.Button(canvas_oldalMenu,image=hianyBeir,command=hianyhoz)
+hianyzas["bg"] = "#3479FF"
+hianyzas["activebackground"] = "#3479FF"
+hianyzas["border"] = "0"
+hianyzas.place(x=29,y=187)
+jegyek_btn = tk.Button(canvas_oldalMenu,image=jegyBeir,command=jegyekhez)
 jegyek_btn["bg"] = "#3479FF"
 jegyek_btn["activebackground"] = "#3479FF"
 jegyek_btn["border"] = "0"
 jegyek_btn.place(x=29,y=242)
-infok_btn = tk.Button(canvas_oldalMenu,image=infokBtn,command="")
+infok_btn = tk.Button(canvas_oldalMenu,image=infokBtn,command=uzeneshez)
 infok_btn["bg"] = "#3479FF"
 infok_btn["activebackground"] = "#3479FF"
 infok_btn["border"] = "0"
 infok_btn.place(x=29,y=297)
-profil_btn = tk.Button(canvas_oldalMenu,image=profilBtn,command="")
+profil_btn = tk.Button(canvas_oldalMenu,image=profilBtn,command=profilhoz)
 profil_btn["bg"] = "#3479FF"
 profil_btn["activebackground"] = "#3479FF"
 profil_btn["border"] = "0"
