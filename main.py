@@ -629,28 +629,28 @@ def TanarBej():
                 oszID = Osztalyok[i][2]
                 if i%2 == 0:
                     #Órák oldal bal része
-                    oszGomb = tk.Button(canvas_TJegy,image=osztalyGomb,command= lambda tid = tanId, oid = oszID:print(f"{tid}, {oid}"))
+                    oszGomb = tk.Button(canvasScrollable_TJegy,image=osztalyGomb,command= lambda tid = tanId, oid = oszID:print(f"{tid}, {oid}"))
                     oszGomb["bg"] = "#FAFAFA"
                     oszGomb["activebackground"] = "#FAFAFA"
                     oszGomb["border"] = "0"
-                    canvasScrollable_TJegy.create_window(50,10+math.floor(i/2)*150,window=oszGomb)
-                    osztalyNev = tk.Label(canvas_TJegy,bg="#C1D8FF",foreground="black",text=Osztalyok[i][2],font=('Inter',38,'bold'))
+                    canvasScrollable_TJegy.create_window(50,10+math.floor(i/2)*150,window=oszGomb,anchor="nw")
+                    osztalyNev = tk.Label(canvasScrollable_TJegy,bg="#C1D8FF",foreground="black",text=Osztalyok[i][2],font=('Inter',38,'bold'))
                     osztalyNev.bind("<Button-1>",lambda e,tid = tanId, oid = oszID:print(f"{tid}, {oid}"))
-                    canvasScrollable_TJegy.create_window(55,15+math.floor(i/2)*150,window=osztalyNev,width=79,height=67)
+                    canvasScrollable_TJegy.create_window(55,35+math.floor(i/2)*150,window=osztalyNev,width=79,height=67,anchor="nw")
 
                 else:
                     #Órák oldal jobb része
-                    oszGomb = tk.Button(canvas_TJegy,image=osztalyGomb,command= lambda tid = tanId, oid = oszID:print(f"{tid}, {oid}"))
+                    oszGomb = tk.Button(canvasScrollable_TJegy,image=osztalyGomb,command= lambda tid = tanId, oid = oszID:print(f"{tid}, {oid}"))
                     oszGomb["bg"] = "#FAFAFA"
                     oszGomb["activebackground"] = "#FAFAFA"
                     oszGomb["border"] = "0"
-                    canvasScrollable_TJegy.create_window(430,10+math.floor(i/2)*150,window=oszGomb)
-                    osztalyNev = tk.Label(canvas_TJegy,bg="#C1D8FF",foreground="black",text=Osztalyok[i][2],font=('Inter',38,'bold'))
+                    canvasScrollable_TJegy.create_window(430,10+math.floor(i/2)*150,window=oszGomb,anchor="nw")
+                    osztalyNev = tk.Label(canvasScrollable_TJegy,bg="#C1D8FF",foreground="black",text=Osztalyok[i][2],font=('Inter',38,'bold'))
                     osztalyNev.bind("<Button-1>",lambda e,tid = tanId, oid = oszID:print(f"{tid}, {oid}"))
-                    canvasScrollable_TJegy.create_window(438,15+math.floor(i/2)*150,window=osztalyNev,width=79,height=67)
+                    canvasScrollable_TJegy.create_window(438,35+math.floor(i/2)*150,window=osztalyNev,width=79,height=67,anchor="nw")
             
-            canvasScrollable["scrollregion"]=(0,0,500,len(Osztalyok)*150)
-            canvasScrollable.pack(side="left",expand=True,fill="both")
+            canvasScrollable_TJegy["scrollregion"]=(0,0,700,len(Osztalyok)*150/2)
+            canvasScrollable_TJegy.pack(side="left",expand=True,fill="both")
 
             canvas_bej.place(x=1000,y=0)
             canvas_TKezdolap.place(x=200,y=0)
@@ -1236,14 +1236,14 @@ canvas_THianyzas.place(x=1000,y=0)
 canvas_TJegy = tk.Canvas(main,bg="#FAFAFA")
 canvas_TJegy.place(x=1000,y=0,width=800,height=700)
 
-frame_TJegy=tk.Frame(canvas_TJegy,width=700,height=600,borderwidth=0,highlightthickness=0)
-frame_TJegy.pack(expand=True, fill="both", padx=100, pady=(200,0))
+frame_TJegy=tk.Frame(canvas_TJegy,width=700,height=550,borderwidth=0,highlightthickness=0)
+frame_TJegy.pack(expand=True, fill="both", padx=10, pady=(100,0))
 
-canvasScrollable_TJegy=tk.Canvas(frame_TJegy,width=700,height=600,scrollregion=(0,0,500,1500),bg="red",borderwidth=0,highlightthickness=0)
+canvasScrollable_TJegy=tk.Canvas(frame_TJegy,width=700,height=550,scrollregion=(0,0,500,1500),bg="#FAFAFA",borderwidth=0,highlightthickness=0)
 vbar=tk.Scrollbar(frame_TJegy,orient="vertical")
 vbar.pack(side="right",fill="y")
 vbar.config(command=canvasScrollable_TJegy.yview)
-canvasScrollable_TJegy.config(width=700,height=600)
+canvasScrollable_TJegy.config(width=700,height=550)
 canvasScrollable_TJegy.config(yscrollcommand=vbar.set)
 #endregion
 
